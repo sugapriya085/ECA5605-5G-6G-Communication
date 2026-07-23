@@ -1,0 +1,82 @@
+clc;
+clear;
+close all;
+
+%% Objective 1: Time Slot Duration Calculation
+
+FrameTime = 4.615;
+TotalSlots = 8;
+
+SlotDuration = FrameTime / TotalSlots;
+
+t = 0:SlotDuration:FrameTime;
+
+fprintf('Time Slot Duration = %.4f ms\n\n',SlotDuration);
+
+%% Objective 2: Frame Utilization Calculation
+
+AllocatedSlots = 6;
+FreeSlots = TotalSlots - AllocatedSlots;
+
+Utilization = (AllocatedSlots / TotalSlots) * 100;
+
+fprintf('Frame Utilization = %.2f %%\n\n',Utilization);
+
+%% Objective 3: Time Slot Allocation for Multiple Users
+
+Users = 1:8;
+
+Allocation = zeros(1,length(Users));
+Allocation(1:AllocatedSlots) = 1;
+
+Blocked = 1 - Allocation;
+
+disp('User Wise Slot Allocation')
+disp(table(Users',Allocation',...
+    'VariableNames',{'User','Status_1_Allocated_0_Blocked'}));
+
+figure
+
+subplot(3,2,1)
+stem(t,ones(size(t)),'filled')
+title('TDMA Time Slot Structure')
+xlabel('Time (ms)')
+ylabel('Slot Level')
+grid on
+
+subplot(3,2,2)
+plot(t,ones(size(t)),'-o','LineWidth',1.5)
+title('Continuous Slot Allocation')
+xlabel('Time (ms)')
+ylabel('Slot Presence')
+grid on
+
+subplot(3,2,3)
+plot([1 2],[AllocatedSlots FreeSlots],'-o','LineWidth',2)
+title('Allocated vs Free Slots')
+xlabel('1=Allocated  2=Free')
+ylabel('Number of Slots')
+grid on
+
+subplot(3,2,4)
+pie([AllocatedSlots FreeSlots])
+title('Frame Utilization')
+legend('Allocated','Free')
+
+subplot(3,2,5)
+stem(Users,Allocation,'filled','LineWidth',2)
+title('TDMA Slot Allocation per User')
+xlabel('User')
+ylabel('Status')
+ylim([-0.2 1.2])
+grid on
+
+subplot(3,2,6)
+plot(Users,Allocation,'-o','LineWidth',2)
+hold on
+plot(Users,Blocked,'-s','LineWidth',2)
+title('TDMA Slot Utilization Analysis')
+xlabel('User')
+ylabel('Status')
+legend('Allocated','Blocked')
+grid on
